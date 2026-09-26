@@ -34,10 +34,12 @@ export function Inspector({ snapshot, selection, onSelect, mode, onChanged }: { 
   const source = selection?.kind === 'source' ? snapshot.sources.find(row => row.source_id === selection.id && row.source_version === selection.version) : undefined;
   const evidenceIds = claim ? [...claim.evidence_ids, ...claim.conflicting_evidence_ids] : [];
   const [evidenceIndex, setEvidenceIndex] = useState(0);
-  const [detail, setDetail] = useState<EvidenceDetail | null>(null);
+  const [loadedDetail, setDetail] = useState<EvidenceDetail | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const evidenceId = evidenceIds[Math.min(evidenceIndex, Math.max(evidenceIds.length - 1, 0))];
+  const detail = loadedDetail?.evidence_id === evidenceId ? loadedDetail : null;
   useEffect(() => { setEvidenceIndex(0); }, [claim?.claim_id]);
   useEffect(() => {
     let cancelled = false;
@@ -46,7 +48,7 @@ export function Inspector({ snapshot, selection, onSelect, mode, onChanged }: { 
     setLoading(true);
     api.evidence(snapshot.run_id, evidenceId).then(value => { if (!cancelled) setDetail(value); }).catch(reason => { if (!cancelled) setError(reason instanceof Error ? reason.message : 'Evidence could not be loaded.'); }).finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [snapshot.run_id, evidenceId]);
+  }, [snapshot.run_id, evidenceId, retryCount]);
   const decision = claim ? snapshot.decisions.find(row => row.decision_target === claim.claim_id || row.evidence_ids.some(id => evidenceIds.includes(id))) : undefined;
   const investigation = decision ? snapshot.investigations.find(row => row.investigation_id === decision.investigation_id) : claim ? snapshot.investigations.find(row => row.gene_id === claim.gene_id) : undefined;
   const usable = claim?.usable_evidence_ids.includes(evidenceId) || claim?.usable_conflicting_evidence_ids.includes(evidenceId);
@@ -63,7 +65,7 @@ export function Inspector({ snapshot, selection, onSelect, mode, onChanged }: { 
       <section className="inspector-section evidence-section"><div className="section-title"><h3>Original evidence</h3><span>{evidenceIds.length} {evidenceIds.length === 1 ? 'reference' : 'references'}</span></div>
         {evidenceIds.length > 1 && <div className="evidence-tabs" role="group" aria-label="Evidence references">{evidenceIds.map((id, i) => <button key={id} className={evidenceId === id ? 'active' : ''} onClick={() => setEvidenceIndex(i)}>{i + 1}{claim.conflicting_evidence_ids.includes(id) ? ' · conflict' : ''}</button>)}</div>}
         {loading && <div className="loading-passage">Retrieving canonical passage…</div>}
-        {error && <div className="inline-error" role="alert">{error}</div>}
+        {error && <div className="inline-error" role="alert">{error}<button className="button secondary full" onClick={() => setRetryCount(value => value + 1)}>Retry evidence retrieval</button></div>}
         {!evidenceIds.length && <p className="muted">No evidence has been accepted for this claim.</p>}
         {detail && <><div className={`passage-label ${usable ? '' : 'muted'}`}><Icon name={usable ? 'check' : 'warning'} size={13} />{conflicting ? 'Conflicting evidence' : 'Canonical source passage'}{!usable && ' · unavailable'}</div><blockquote>{detail.quote}</blockquote><div className="passage-footer"><span>Server-reconstructed span</span><code>{detail.start_offset}–{detail.end_offset}</code></div><SourceDetails key={`${detail.source_id}/${detail.source_version}`} source={detail.source} snapshot={snapshot} mode={mode} onChanged={onChanged} /></>}
       </section>

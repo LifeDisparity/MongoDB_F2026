@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api, type SearchMatch, type SourceSpan } from '../api/client';
 import type { EvidenceDetail, RunSnapshot, SourceSnapshot } from '../contracts';
 import { Icon } from '../app/Icon';
@@ -19,42 +19,53 @@ export function PassageBrowser({ source, snapshot, mode, onChanged }: { source: 
   const [error, setError] = useState<string | null>(null);
   const [acceptedDetail, setAcceptedDetail] = useState<EvidenceDetail | null>(null);
   const [openingEvidence, setOpeningEvidence] = useState<string | null>(null);
+  const requests = useRef({ search: 0, read: 0, inspect: 0, pin: 0 });
+  useEffect(() => () => { requests.current.search++; requests.current.read++; requests.current.inspect++; requests.current.pin++; }, []);
   const available = snapshot.source_state.find(row => row.source_id === source.source_id && row.source_version === source.source_version)?.available ?? false;
   const pinned = snapshot.evidence.filter(row => row.source_id === source.source_id && row.source_version === source.source_version);
   const visibleDetail = acceptedDetail && pinned.some(row => row.evidence_id === acceptedDetail.evidence_id) ? acceptedDetail : null;
   const inspect = async (evidenceId: string) => {
+    const requestId = ++requests.current.inspect;
     setOpeningEvidence(evidenceId); setError(null); setAcceptedDetail(null);
-    try { setAcceptedDetail(await api.evidence(snapshot.run_id, evidenceId)); }
-    catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to inspect this accepted evidence.'); }
-    finally { setOpeningEvidence(null); }
+    try { const detail = await api.evidence(snapshot.run_id, evidenceId); if (requestId === requests.current.inspect) setAcceptedDetail(detail); }
+    catch (reason) { if (requestId === requests.current.inspect) setError(reason instanceof Error ? reason.message : 'Unable to inspect this accepted evidence.'); }
+    finally { if (requestId === requests.current.inspect) setOpeningEvidence(null); }
   };
   const search = async (continuation = false) => {
+    if (searching || mode !== 'LIVE' || !available || !geneId.trim() || !query.trim()) return;
+    const requestId = ++requests.current.search;
     setSearching(true); setError(null);
-    if (!continuation) { setMatches([]); setSpans([]); setActiveChunk(null); setSearchCursor(null); }
+    if (!continuation) { requests.current.read++; setReading(false); setMatches([]); setSpans([]); setActiveChunk(null); setSearchCursor(null); setSearched(false); }
     const nextQuery = continuation ? activeQuery : { geneId: geneId.trim(), query: query.trim() };
     try {
       const page = await api.search(snapshot.run_id, nextQuery.geneId, nextQuery.query, continuation ? searchCursor ?? undefined : undefined);
+      if (requestId !== requests.current.search) return;
       const selectedSource = page.matches.filter(row => row.source_id === source.source_id && row.source_version === source.source_version);
       setMatches(previous => continuation ? [...previous, ...selectedSource.filter(row => !previous.some(item => item.chunk_id === row.chunk_id))] : selectedSource);
       setSearchCursor(page.next_cursor); setActiveQuery(nextQuery); setSearched(true);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to search this source.'); }
-    finally { setSearching(false); }
+    } catch (reason) { if (requestId === requests.current.search) setError(reason instanceof Error ? reason.message : 'Unable to search this source.'); }
+    finally { if (requestId === requests.current.search) setSearching(false); }
   };
   const read = async (match: SearchMatch, continuation = false) => {
+    if (mode !== 'LIVE' || !available) return;
+    const requestId = ++requests.current.read;
     setReading(true); setError(null);
     if (!continuation) { setActiveChunk(match); setSpans([]); setChunkCursor(null); }
     try {
       const page = await api.chunk(snapshot.run_id, match.chunk_id, source.source_version, continuation ? chunkCursor ?? undefined : undefined);
+      if (requestId !== requests.current.read) return;
       setSpans(previous => continuation ? [...previous, ...page.spans.filter(row => !previous.some(item => item.span_id === row.span_id))] : page.spans);
       setChunkCursor(page.next_cursor);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to read this source section.'); }
-    finally { setReading(false); }
+    } catch (reason) { if (requestId === requests.current.read) setError(reason instanceof Error ? reason.message : 'Unable to read this source section.'); }
+    finally { if (requestId === requests.current.read) setReading(false); }
   };
   const pin = async (span: SourceSpan) => {
+    if (mode !== 'LIVE' || !available || pinning) return;
+    const requestId = ++requests.current.pin;
     setPinning(span.span_id); setError(null);
     try { await api.pinEvidence(snapshot.run_id, span.span_id, source.source_version); await onChanged(); }
-    catch (reason) { setError(reason instanceof Error ? reason.message : 'Unable to record this evidence.'); }
-    finally { setPinning(null); }
+    catch (reason) { if (requestId === requests.current.pin) setError(reason instanceof Error ? reason.message : 'Unable to record this evidence.'); }
+    finally { if (requestId === requests.current.pin) setPinning(null); }
   };
 
   return <section className="inspector-section passage-browser"><div className="section-title"><h3>Read original passages</h3><span>{pinned.length} pinned</span></div><p className="muted">Search this imported source and pin exact server-held spans. Reading or pinning a passage does not establish a scientific claim.</p>

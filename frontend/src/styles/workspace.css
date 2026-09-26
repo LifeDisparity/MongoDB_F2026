@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
+dialog.start-overlay{width:100vw;max-width:none;height:100dvh;max-height:none;border:0;margin:0;color:inherit}
+dialog.start-overlay::backdrop{background:transparent}
+.react-flow__node[role="button"]:focus-visible{outline:2px solid var(--cyan);outline-offset:5px;border-radius:8px}
+
 /* React Flow owns its inline 100% dimensions; constrain its parent viewport. */
 .graph-canvas{position:absolute;top:77px;bottom:34px;left:0;right:0}
 @media(min-width:1650px){.graph-canvas{top:85px;bottom:40px}}

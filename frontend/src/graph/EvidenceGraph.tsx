@@ -44,9 +44,9 @@ export function EvidenceGraph({ snapshot, selection, onSelect, changedIds }: { s
     for (const gene of genes) {
       const claims = snapshot.claims.filter(claim => claim.gene_id === gene).sort((a, b) => a.claim_id.localeCompare(b.claim_id));
       const start = lane;
-      nodes.push({ id: `gene:${gene}`, type: 'gene', position: { x: 30, y: (start + (claims.length - 1) / 2) * 185 + 20 }, data: { name: shortGene(gene), count: claims.length, fixture: snapshot.mode === 'fixture' }, draggable: false, selectable: false });
+      nodes.push({ id: `gene:${gene}`, type: 'gene', position: { x: 30, y: (start + (claims.length - 1) / 2) * 185 + 20 }, data: { name: shortGene(gene), count: claims.length, fixture: snapshot.mode === 'fixture' }, draggable: false, selectable: false, focusable: false });
       for (const claim of claims) {
-        nodes.push({ id: `claim:${claim.claim_id}`, type: 'claim', position: { x: 260, y: lane * 185 }, data: { claim, updated: changedIds.includes(claim.claim_id) }, selected: selection?.kind === 'claim' && selection.id === claim.claim_id, draggable: false });
+        nodes.push({ id: `claim:${claim.claim_id}`, type: 'claim', position: { x: 260, y: lane * 185 }, data: { claim, updated: changedIds.includes(claim.claim_id) }, selected: selection?.kind === 'claim' && selection.id === claim.claim_id, draggable: false, ariaRole: 'button', ariaLabel: `Inspect claim ${claim.claim_id}: ${claim.object_label}, ${statusLabel(claim.status)}` });
         edges.push({ id: `gene-claim:${claim.claim_id}`, source: `gene:${gene}`, target: `claim:${claim.claim_id}`, type: 'smoothstep', className: `atlas-edge status-${claim.status}` });
         for (const evidenceId of [...claim.evidence_ids, ...claim.conflicting_evidence_ids]) {
           const evidence = snapshot.evidence.find(row => row.evidence_id === evidenceId);
@@ -60,15 +60,23 @@ export function EvidenceGraph({ snapshot, selection, onSelect, changedIds }: { s
     }
     snapshot.sources.slice().sort((a, b) => a.source_id.localeCompare(b.source_id)).forEach((source, i) => {
       const state = snapshot.source_state.find(row => row.source_id === source.source_id && row.source_version === source.source_version);
-      nodes.push({ id: `source:${source.source_id}:${source.source_version}`, type: 'source', position: { x: genes.length ? 677 : 155, y: i * 185 + 34 }, data: { source, available: state?.available ?? false }, selected: selection?.kind === 'source' && selection.id === source.source_id && selection.version === source.source_version, draggable: false });
+      nodes.push({ id: `source:${source.source_id}:${source.source_version}`, type: 'source', position: { x: genes.length ? 677 : 155, y: i * 185 + 34 }, data: { source, available: state?.available ?? false }, selected: selection?.kind === 'source' && selection.id === source.source_id && selection.version === source.source_version, draggable: false, ariaRole: 'button', ariaLabel: `Inspect source ${source.source_id}: ${source.title}` });
     });
     return { nodes, edges };
-  }, [snapshot, selection, changedIds]);
+  }, [snapshot, selection, changedIds, onSelect]);
 
-  return <div className="graph-canvas"><ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.07, maxZoom: 1 }} minZoom={0.3} maxZoom={1.6} nodesDraggable={false} nodesConnectable={false} onNodeClick={(_event, node) => {
+  const inspectNode = (node: Node) => {
     if (node.type === 'claim') onSelect({ kind: 'claim', id: (node.data.claim as Claim).claim_id });
     if (node.type === 'source') { const source = node.data.source as SourceSnapshot; onSelect({ kind: 'source', id: source.source_id, version: source.source_version }); }
-  }} onPaneClick={() => onSelect(null)} proOptions={{ hideAttribution: true }} aria-label="Scientific evidence graph">
+  };
+  return <div className="graph-canvas" onKeyDownCapture={event => {
+    if (!['Enter', ' ', 'Escape'].includes(event.key) || !(event.target instanceof HTMLElement)) return;
+    const nodeId = event.target.closest<HTMLElement>('.react-flow__node')?.dataset.id;
+    const node = nodes.find(item => item.id === nodeId);
+    if (!node || !['claim', 'source'].includes(node.type ?? '')) return;
+    event.preventDefault(); event.stopPropagation();
+    if (event.key === 'Escape') onSelect(null); else inspectNode(node);
+  }}><ReactFlow nodes={nodes} edges={edges} nodeTypes={nodeTypes} fitView fitViewOptions={{ padding: 0.07, maxZoom: 1 }} minZoom={0.3} maxZoom={1.6} nodesDraggable={false} nodesConnectable={false} edgesFocusable={false} deleteKeyCode={null} ariaLabelConfig={{ 'node.a11yDescription.default': 'Press Enter or Space to inspect this record. Press Escape to close the inspector.' }} onNodeClick={(_event, node) => inspectNode(node)} onPaneClick={() => onSelect(null)} proOptions={{ hideAttribution: true }} aria-label="Scientific evidence graph">
     <Background variant={BackgroundVariant.Dots} color="#364147" gap={24} size={1} />
     <Controls showInteractive={false} position="bottom-left" />
   </ReactFlow></div>;

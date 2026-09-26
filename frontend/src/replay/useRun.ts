@@ -55,7 +55,7 @@ export function useRun(runId: string | null) {
 
   const lastSequence = events.at(-1)?.sequence ?? 0;
   const sequence = cursor === null ? lastSequence : Math.min(cursor, lastSequence);
-  const snapshot = useMemo(() => seed ? replayThrough(seed, events, sequence) : null, [seed, events, sequence]);
+  const snapshot = useMemo(() => seed?.run_id === runId ? replayThrough(seed, events, sequence) : null, [seed, events, sequence, runId]);
 
   useEffect(() => {
     if (!playing) return;
