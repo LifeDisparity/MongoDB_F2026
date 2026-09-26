@@ -401,11 +401,12 @@ class MongoRepository:
                             expected = request["expected_revisions"].get(collection, {}).get(identity)
                             if type(expected) is not int or expected != existing["revision"]:
                                 raise Conflict(f"Stale or missing {collection} revision")
-                            if collection == "policies" and any(
-                                row.get(field) != existing.get(field) for field in
-                                ("configuration", "configuration_sha256", "parent_policy_version", "proposed_by", "development_failure_ids")
-                            ):
-                                raise IntegrityError("Policy configuration and provenance are immutable")
+                            if collection == "policies":
+                                selection_fields = {"selection_status", "evaluation_id", "revision", "_id"}
+                                before = {key: value for key, value in existing.items() if key not in selection_fields}
+                                after = {key: value for key, value in row.items() if key not in selection_fields}
+                                if before != after:
+                                    raise IntegrityError("Policy configuration and provenance are immutable")
                             row["revision"] = expected + 1
                             changed = self.db[collection].replace_one(
                                 {**query, "revision": expected}, deepcopy(row), session=session,
