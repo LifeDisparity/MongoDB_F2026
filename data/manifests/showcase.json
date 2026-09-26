@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "manifest_id": "flyaoc-derived-development-showcase-v1",
+  "transform_version": "flyaoc_paragraphs_v1",
+  "purpose": "Development source browsing only; not a frozen benchmark or final-test cohort",
+  "dataset": {
+    "repository": "anonymous-042/flyaoc",
+    "revision": "8a766e6418e309ef869fbbadfc65c662ed20bdd8",
+    "url": "https://huggingface.co/datasets/anonymous-042/flyaoc/tree/8a766e6418e309ef869fbbadfc65c662ed20bdd8",
+    "license": "other; article-specific rights apply",
+    "files": {
+      "corpus.jsonl": {
+        "sha256": "8b7236a3dba5578b3f8f29c06d42bd4a8d36b1b8985324b257d64102698af8d8",
+        "size_bytes": 660303756,
+        "role": "literature",
+        "verification": "downloaded_bytes"
+      },
+      "pmc_license_manifest.jsonl": {
+        "sha256": "a0e6daca2986fe7ca3eef30bec5bce9225fc70f81fde36493c180fccf036cc9d",
+        "size_bytes": 6729039,
+        "role": "article_rights",
+        "verification": "downloaded_bytes"
+      },
+      "ontologies/fly_anatomy.obo": {
+        "sha256": "50cbbc694414f765b2cae8b27984fc96e0627774e2e1e55e02197259e292f2be",
+        "size_bytes": 38424811,
+        "role": "ontology",
+        "license_id": "CC-BY-4.0",
+        "verification": "downloaded_bytes"
+      },
+      "ontologies/fly_development.obo": {
+        "sha256": "6f9803cc02a3bf8fe843cdc66d8af08de3cd6f71f87337b9acbaaa6f085fa686",
+        "size_bytes": 118720,
+        "role": "ontology",
+        "license_id": "CC-BY-4.0",
+        "verification": "downloaded_bytes"
+      }
+    },
+    "excluded_answer_files": ["benchmark.jsonl", "ground_truth_hidden.jsonl", "hidden_go_terms.json"]
+  },
+  "sources": [
+    {
+      "source_id": "PMC3345284",
+      "title": "Teneurins Instruct Synaptic Partner Matching in an Olfactory Map",
+      "original_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3345284/",
+      "record_sha256": "40e4d64aa0d93585ad841af942debc1135e6bc882afac1cdbce56f7984d84eb1",
+      "content_sha256": "f675b30c711d09fd2f5b0c4f367af74b1d6920ea7fbf5922717373854c1acca5",
+      "license_id": "NO-CC CODE",
+      "license_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3345284/#copyright",
+      "distribution_status": "restricted_text_mining",
+      "rights_note": "Author manuscript. Academic research and text/data mining subject to Nature conditions of use; no blanket public redistribution permission. Keep full text private and export citations with permitted attributed excerpts only.",
+      "gene_ids": ["FBgn0267001"],
+      "gene_symbols": ["Ten-a"],
+      "gene_identity_source": "https://flybase.org/reports/FBgn0267001",
+      "split": "development",
+      "limitations": "FlyAOC groups much experimental text under INTRO and omits figure captions. Preserve its section labels, read the actual paragraphs, and consult the linked paper for figures. No final-test eligibility."
+    },
+    {
+      "source_id": "PMC4006830",
+      "title": "The transcriptional regulator lola is required for stem cell maintenance and germ cell differentiation in the Drosophila testis",
+      "original_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4006830/",
+      "record_sha256": "9c0a4bcc562c815360f5318694f948f29279dddf34201bf6725207e79398e3d0",
+      "content_sha256": "47741a13b64de80435a259d110b944611b26b13aa48f164e8e22147839b84977",
+      "license_id": "author_manuscript",
+      "license_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4006830/#copyright",
+      "distribution_status": "restricted_text_mining",
+      "rights_note": "Author manuscript made available for text mining; other uses remain subject to fair use and article rights. No blanket public redistribution permission. Keep full text private.",
+      "gene_ids": ["FBgn0283521"],
+      "gene_symbols": ["lola"],
+      "gene_identity_source": "https://flybase.org/reports/FBgn0283521",
+      "split": "development",
+      "limitations": "Isoform-specific observations must not be generalized to every Lola isoform. No final-test eligibility."
+    }
+  ],
+  "source_overlap": {"development": ["PMC3345284", "PMC4006830"], "validation": [], "final_test": []},
+  "evaluation_status": "not_prepared; no labels or scores included"
+}
