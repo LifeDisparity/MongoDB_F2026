@@ -18,3 +18,12 @@ artifacts/private/
 .env
 .env.*
 !.env.example
+
+# Safe Harbor local services and downloaded sources
+.env
+.venv/
+data/safe_harbor/raw/
+data/safe_harbor/reference/
+data/safe_harbor/mongo/
+artifacts/private/
+*.pid

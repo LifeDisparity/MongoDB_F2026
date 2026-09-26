@@ -1,0 +1,95 @@
+{
+  "repository": "LifeDisparity/MongoDB_F2026",
+  "branch": "codex/safe-harbor",
+  "tickets": {
+    "F01": {
+      "number": 36,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/36",
+      "title": "[CLAIMED: codex-integrator] [SH-F01] Establish the working repository and short operating documents"
+    },
+    "F02": {
+      "number": 37,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/37",
+      "title": "[CLAIMED: codex-integrator] [SH-F02] Freeze schema version 1 and publish fixtures"
+    },
+    "F03": {
+      "number": 38,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/38",
+      "title": "[CLAIMED: codex-integrator] [SH-F03] Assign ownership and integration order"
+    },
+    "F04": {
+      "number": 39,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/39",
+      "title": "[CLAIMED: codex-integrator] [SH-F04] Prove the runtime environment"
+    },
+    "D01": {
+      "number": 40,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/40",
+      "title": "[CLAIMED: codex-data] [SH-D01] Freeze scientific criteria and result semantics"
+    },
+    "D02": {
+      "number": 41,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/41",
+      "title": "[CLAIMED: codex-data] [SH-D02] Ingest the compact experimental source pack"
+    },
+    "D03": {
+      "number": 42,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/42",
+      "title": "[CLAIMED: codex-data] [SH-D03] Import and normalize candidate regions"
+    },
+    "D04": {
+      "number": 43,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/43",
+      "title": "[CLAIMED: codex-data] [SH-D04] Freeze reference windows and annotation coverage"
+    },
+    "D05": {
+      "number": 44,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/44",
+      "title": "[AVAILABLE] [SH-D05] Implement deterministic genomic calculations"
+    },
+    "D06": {
+      "number": 45,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/45",
+      "title": "[AVAILABLE] [SH-D06] Implement expression/control/proximity calculations"
+    },
+    "D07": {
+      "number": 46,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/46",
+      "title": "[AVAILABLE] [SH-D07] Publish bounded worker tools"
+    },
+    "D08": {
+      "number": 47,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/47",
+      "title": "[AVAILABLE] [SH-D08] Independently establish reference answers"
+    },
+    "D09": {
+      "number": 48,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/48",
+      "title": "[AVAILABLE] [SH-D09] Freeze cases, grouping and evaluation splits"
+    },
+    "D10": {
+      "number": 49,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/49",
+      "title": "[AVAILABLE] [SH-D10] Package provenance, attribution and optional tracks"
+    },
+    "R01": {
+      "number": 50,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/50",
+      "title": "[CLAIMED: codex-runtime] [SH-R01] Create MongoDB collections and indexes"
+    },
+    "R02": {
+      "number": 51,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/51",
+      "title": "[CLAIMED: codex-runtime] [SH-R02] Implement transactional result acceptance"
+    },
+    "R03": {
+      "number": 52,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/52",
+      "title": "[CLAIMED: codex-runtime] [SH-R03] Implement API, snapshots and ordered polling"
+    }
+  },
+  "board": {
+    "number": 35,
+    "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/35"
+  }
+}

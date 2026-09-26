@@ -1,84 +1,15 @@
-# Living Atlas: agent instructions
+# Safe Harbor — implementation instructions
 
-## Non-negotiable user direction
+The user's Safe Harbor handoff is the specification. This checkout supersedes the inherited Living Atlas implementation; do not assume inherited behavior satisfies Safe Harbor.
 
-**NO UNIT TESTS. E2E ONLY. WE NEED SPEED.**
+NO UNIT TESTS. NO COMPONENT TESTS. E2E ONLY. Build, type, syntax, schema and data-integrity checks are allowed.
 
-Do not write, port, or commit unittest/pytest/component test suites.
-Build/type/syntax checks are permitted.
-Validate behavior through complete application flows.
-Scientific benchmark fixtures remain necessary product inputs; they are not a
-software unit-test suite.
+Integrator owns shared/, root configuration, dependency manifests, startup, and integration. Data owns backend/safe_harbor/science/ and data/safe_harbor/. Runtime owns backend/safe_harbor/runtime/ and backend/safe_harbor/api.py. UI owns frontend/src/ excluding contracts (import shared/contracts.ts). Ask integrator before changing shared interfaces. Small integrated increments; no parallel edits to another lane's files.
 
-## Product
+GRCh38 reference; H1 human embryonic stem cell context. Published shortlist, not newly discovered. Never label a locus globally safe. Separate screen_status, evidence_status and freshness. Missing required evidence means incomplete; missing experimental evidence is not a negative result. Use actual files, hashes, source rows, verified coordinates and real reference sequence. Preserve H9 as a different context. Cancer-gene evidence unavailable unless documented. GENCODE v36 is a new annotation analysis.
 
-Living Atlas is an AI that maps what genes do, remembers the evidence, and tests
-better ways to investigate.
+MongoDB application ledger is authoritative. Accept application state and ordered events transactionally. Checkpoints are a separate recovery aid. Max two workers, 24 nodes, three replans, one transient retry; enforce durable budgets. Identical operation IDs deduplicate, conflicting hashes reject. Record query scope dependencies including empty results.
 
-Four observable behaviors define the product:
-1. Targeted evidence acquisition resolves or changes a scientific decision.
-2. A model proposes an executable harness change and a separate evaluator
-   promotes or rejects it using frozen criteria.
-3. A fresh worker resumes a persistent investigation.
-4. Changing evidence availability reopens only dependent conclusions.
+Harness changes must be saved, bounded, executable structural patches. Fixed scientific criteria, evaluation, input data, model and budgets. Freeze per run. Distinguish mock, deterministic operational, real model, recorded replay. No fabricated improvements. Only E2E checks and honest measured results.
 
-## Read first
-
-- docs/START_HERE.md
-- docs/ARCHITECTURE.md
-- docs/CONTRACTS.md
-- docs/EVALUATION.md
-- docs/E2E.md
-- Your docs/tickets/LA-XX.md and docs/agents/LA-XX.md
-
-## Delivery discipline
-
-Work on a bounded ticket and named branch. Respect file ownership.
-One integrator owns shared contracts, root dependency/config files and API
-composition. Coordinate before changing these.
-
-Deliver working vertical slices. Avoid speculative infrastructure.
-Do not claim completion for code that has not been integrated.
-Handoff: commit/PR, changed paths, interfaces, actual E2E evidence, limitations,
-and the next owner/dependency.
-
-Do not overwrite other contributors' changes.
-Do not introduce a second database, distributed scheduler, workflow editor,
-authentication system, 3D graph, or giant runtime agent swarm.
-
-## Runtime
-
-Python/FastAPI/LangGraph/MongoDB Atlas.
-React/TypeScript/React Flow.
-One durable workflow per investigation, at most two concurrent investigations.
-Checkpoints own execution progress.
-Immutable source versions and evidence references own scientific memory.
-Availability is a run-scoped overlay, not a rewrite of a paper.
-
-## Scientific integrity
-
-Expression is not function.
-Negative results are specific to the reported experiment.
-Keep gene, tissue, stage, assay, intervention and cell class explicit.
-Canonical quotations are reconstructed from server-held source spans.
-Source withdrawal changes support, not biological truth.
-Do not invent baseline failures, autonomous decisions, performance gains,
-citations, run duration, or billion-token validation.
-
-All experimental arms receive known aliases and strong scientific instructions.
-Keep gold/reference labels inaccessible to worker retrieval.
-Final-test results never feed back into optimization.
-
-## Allowed harness changes
-
-Context assembly and conditional scientific scope review only.
-Keep evaluator, source provenance, model identity, permissions and budgets
-outside the mutable policy.
-A rejected candidate demonstrates evaluation, not successful self-improvement.
-
-## Reuse
-
-AGR pin: 9d478db87997fb7695ee268293d5ad58cbb4a2e2.
-Retain its MIT license and UPSTREAM.md.
-Do not copy FlyAOC implementation source without an explicit license/permission.
-Do not commit credentials, downloaded corpora, or restricted full article text.
+Ticket reports: changed paths; what works; acceptance evidence; limitations; next dependent ticket. No secrets in commits or outputs. Do not send messages or publish externally without user instruction.

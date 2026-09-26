@@ -1,5 +1,5 @@
 {
-  "name": "living-atlas-workspace",
+  "name": "safe-harbor",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,18 +7,19 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "e2e": "node ../e2e/workspace.mjs"
+    "e2e": "node ../e2e/safe_harbor/browser.mjs"
   },
   "dependencies": {
     "@xyflow/react": "12.12.0",
+    "igv": "^3.8.9",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "playwright": "1.63.0",
     "typescript": "7.0.2",
-    "vite": "8.3.1",
-    "playwright": "1.63.0"
+    "vite": "8.3.1"
   }
 }
