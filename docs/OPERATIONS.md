@@ -57,6 +57,42 @@ pending configuration. The app does not silently replace unavailable storage.
 Omit `--allow-demo` to disable availability mutations (HTTP 403). No authentication
 is implemented for this MVP; the launcher binds only to localhost.
 
+## Model adapter configuration
+
+The structured model adapter is installed, but the current workspace does not
+invoke it to investigate papers. Configure `OPENAI_API_KEY` and an explicit
+`MODEL_ID` only in the ignored server `.env` or server environment, then restart
+the launcher. Neither setting belongs in a frontend variable. No default model
+is selected, and configuring a model does not start a provider call.
+
+Inspect the running server without contacting the model provider:
+
+```sh
+curl --fail http://127.0.0.1:8000/health
+```
+
+`model_adapter.configured` means both server settings are present; it does not
+verify credentials, model access or successful inference. Missing configuration
+returns `configured: false` and `error_code: model_not_configured`.
+`scientific_workflow` remains `not_configured`, and `/runs/{id}/resume` remains
+HTTP 501. This wave made no real provider calls and did not execute a scientific
+workflow. Source import, identity resolution and evidence pinning do not imply
+model execution.
+
+The server limits in `.env.example` cover total token reservations, model-call
+reservations, output size, input size, retry count and request/deadline timeouts.
+They are immutable to scientific policy changes. Monetary cost is unset until
+verified pricing/billing is integrated; unknown provider usage is not zero cost.
+
+Before connecting a durable workflow, its checkpoint callback must atomically
+compare-and-swap each attempt's `expected_budget`, persist the reservation before
+inference, and persist settlement afterward. Serialize calls per investigation.
+A replayed reservation cannot authorize another physical provider call, and
+interrupted unknown-usage reservations must remain charged against admission.
+The adapter alone does not guarantee cross-process concurrency or exactly-once
+inference. See [the model adapter integration contract](../backend/living_atlas/models/README.md)
+for settings, callback semantics and the verification boundary.
+
 ## Import real papers
 
 ```sh
@@ -65,7 +101,8 @@ is implemented for this MVP; the launcher binds only to localhost.
 
 The first import downloads the pinned literature file (~660 MB), verifies it,
 and retains two selected development articles in the private cache. Later runs
-reuse their exact source versions. Add `--ontologies` only when preparing LA-05.
+reuse their exact source versions. Add `--ontologies` to enable the anatomy and
+developmental-stage lookup endpoints described below.
 See [source provenance and limits](../data/manifests/README.md).
 
 Choose **Open scientific sources**, select a paper, enter a decision-relevant
@@ -78,6 +115,39 @@ ignored `data/raw`; exports contain metadata, references and claims, not article
 text. Ten-a figure captions are absent from the selected upstream corpus and
 its experimental paragraphs have the upstream label INTRO. This subset is
 development-only, not the frozen scientific benchmark.
+
+## Gene and ontology lookup
+
+The committed alias subset supports exact, case-sensitive Drosophila gene
+resolution without a model call. Against the running API:
+
+```sh
+curl --fail --get http://127.0.0.1:8000/tools/resolve-gene \
+  --data-urlencode 'mention=Ten-a' \
+  --data-urlencode 'taxon=NCBITaxon:7227'
+```
+
+Inspect `status`, `candidates` and provenance. Ambiguous mentions remain
+ambiguous, unmatched mentions remain unresolved, and mismatched taxa do not
+silently resolve. Source search also accepts a resolvable gene mention.
+
+Import the SHA-256-pinned anatomy and developmental-stage files, then query
+their exact IDs, labels or exact synonyms:
+
+```sh
+.venv/bin/python -m living_atlas.data.import_sources --manifest data/manifests/showcase.json --cache-dir data/raw/flyaoc --download --ontologies
+curl --fail --get http://127.0.0.1:8000/tools/resolve-term \
+  --data-urlencode 'mention=primary spermatocyte' \
+  --data-urlencode 'ontology=FBbt'
+curl --fail --get http://127.0.0.1:8000/tools/resolve-term \
+  --data-urlencode 'mention=adult stage' \
+  --data-urlencode 'ontology=FBdv'
+```
+
+The endpoint returns HTTP 409 with `ontology_import_required` when the pinned
+files are absent. Hash mismatches reject. Obsolete terms include replacement
+suggestions for review; they are not silently accepted annotations. Successful
+identity or ontology lookup establishes an identifier, not biological entailment.
 
 ## Verification
 

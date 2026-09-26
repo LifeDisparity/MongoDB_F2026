@@ -18,7 +18,7 @@ verifies selective withdrawal, preserved historical evidence, review-required
 restoration, replay parity, duplicate delivery, operation collision rejection,
 export and actual API SIGKILL/restart. This is not LangGraph worker recovery.
 
-See [the recorded engineering run](../artifacts/manifests/wave1-e2e.json) and
+See [the latest recorded engineering run](../artifacts/manifests/wave2-e2e.json) and
 [installation/launch commands](OPERATIONS.md).
 No unit tests were added or run. Frontend build and Python compilation pass.
 
@@ -37,15 +37,30 @@ captions are absent from the selected upstream corpus, and upstream experimental
 paragraphs are labeled INTRO. Do not claim the entire scientific showcase is
 established by source import or exact quote matching.
 
-## Active next lanes
+## Second-wave integration
 
-LA-05/LA-07: deterministic identity/ontology lookup and shared scientific prompts.
-LA-09: configured structured model adapter with actual usage and bounded failures.
-LA-24: persisted policy differences and measured evaluation display.
+LA-05: frozen FlyBase aliases retain full-table collisions; ambiguous candidates
+resolve by explicit primary ID. The HTTP/source search flow resolves Ten-a,
+rejects ambiguous Teneurin search, and preserves taxon mismatch. SHA-256-pinned
+anatomy/stage lookup preserves obsolete IDs and advisory replacements rather
+than automatically accepting them. These paths passed the full application run.
 
-These lanes are claimed before coding in [ACTIVE_WORK](ACTIVE_WORK.md) and the
-GitHub issues. Their code is not complete until integrated and appropriately
-verified. Tickets requiring model/Atlas/canonical runs remain open.
+LA-07: shared scientific instructions adapted from pinned AGR sources are
+available with provenance and hashes. They are not yet executed by a workflow.
+
+LA-09: structured Responses adapter implements bounded retries, schema validation,
+token reservations, provider usage capture, safe failures and durable-checkpoint
+hooks. API lifecycle and explicit unconfigured health status are integrated.
+No provider call was made: credentials/model selection and workflow are absent.
+Dollar cost remains unknown until trusted pricing/accounting is connected.
+
+LA-24: the UI displays stored policy diffs, recorded actions and raw evaluation
+counts/costs without fabricating missing results. Empty-state and keyboard flows
+were browser-verified; no real proposal/evaluation records have executed yet.
+
+All lanes were claimed before coding in [ACTIVE_WORK](ACTIVE_WORK.md) and GitHub.
+Full ticket acceptance remains open where real scientific/model/Atlas/canonical
+runs are required. API process recovery is not LangGraph worker recovery.
 
 ## Preserved production foundations
 

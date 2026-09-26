@@ -23,3 +23,11 @@ First integration target: a runnable browser/API/MongoDB source-and-evidence
 workspace, with explicitly labeled engineering fixtures for availability and
 replay. Model investigation, checkpointed workflow and policy optimization are
 subsequent tickets; fixture behavior must not be represented as those results.
+
+## Integrated handoff, 2026-09-26
+
+Both waves are integrated in draft PR #32. The full engineering browser run at
+commit `c3760a2` passed 16 recorded checks in 6.118 seconds; see
+`artifacts/manifests/wave2-e2e.json`. This duration is the engineering verification,
+not scientific model execution. Model configuration, LangGraph workflow and
+Atlas/canonical scientific acceptance remain pending. Do not close their tickets.

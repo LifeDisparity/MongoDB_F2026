@@ -130,6 +130,19 @@ GET /runs/{id}/evaluations
 GET /runs/{id}/export
 POST /runs/{id}/resume
 POST /runs/{id}/demo-events/source-withdrawal
+GET /runs/{id}/search?gene_id={id_or_alias}&query={query}&cursor={cursor}
+GET /runs/{id}/chunks/{chunk_id}?source_version={version}&cursor={cursor}
+POST /runs/{id}/evidence
+GET /tools/resolve-gene?mention={mention}&taxon={taxon}
+GET /tools/resolve-term?mention={mention}&ontology={FBbt_or_FBdv}
+
+Evidence creation accepts span_ids, source_version and operation_id only.
+Lookup responses preserve explicit ambiguity, taxon mismatch and obsolete terms;
+lookup does not certify a scientific assertion. Source search rejects ambiguous
+aliases with gene_ambiguous and candidates instead of choosing a gene silently.
+Health exposes model_adapter.configured separately from scientific_workflow;
+configuration alone does not verify provider credentials or inference. Resume
+returns workflow_not_configured (HTTP 501) until the durable workflow is connected.
 
 Snapshot includes last_sequence.
 Use a consistent snapshot and event watermark.
