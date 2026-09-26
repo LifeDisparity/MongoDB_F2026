@@ -86,6 +86,221 @@
       "number": 52,
       "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/52",
       "title": "[CLAIMED: codex-runtime] [SH-R03] Implement API, snapshots and ordered polling"
+    },
+    "R04": {
+      "number": 53,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/53",
+      "title": "[CLAIMED: codex-runtime] [SH-R04] Build the typed DAG compiler"
+    },
+    "R05": {
+      "number": 54,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/54",
+      "title": "[CLAIMED: codex-runtime] [SH-R05] Implement bounded scheduling and deduplication"
+    },
+    "R06": {
+      "number": 55,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/55",
+      "title": "[CLAIMED: codex-runtime] [SH-R06] Build genuine and deterministic execution adapters"
+    },
+    "R07": {
+      "number": 56,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/56",
+      "title": "[CLAIMED: codex-runtime] [SH-R07] Implement durable budget accounting"
+    },
+    "R08": {
+      "number": 57,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/57",
+      "title": "[CLAIMED: codex-runtime] [SH-R08] Implement checkpoints and fresh-process recovery"
+    },
+    "R09": {
+      "number": 58,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/58",
+      "title": "[CLAIMED: codex-runtime] [SH-R09] Implement evidence revisions and selective invalidation"
+    },
+    "R10": {
+      "number": 59,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/59",
+      "title": "[AVAILABLE] [SH-R10] Assemble bounded context packets"
+    },
+    "R11": {
+      "number": 60,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/60",
+      "title": "[AVAILABLE] [SH-R11] Produce versioned assessments and shortlists"
+    },
+    "R12": {
+      "number": 61,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/61",
+      "title": "[AVAILABLE] [SH-R12] Export complete, replayable investigations"
+    },
+    "H01": {
+      "number": 62,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/62",
+      "title": "[AVAILABLE] [SH-H01] Define executable harness specifications"
+    },
+    "H02": {
+      "number": 63,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/63",
+      "title": "[AVAILABLE] [SH-H02] Compile bounded structural changes"
+    },
+    "H03": {
+      "number": 64,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/64",
+      "title": "[AVAILABLE] [SH-H03] Implement the competent fixed-agent baseline"
+    },
+    "H04": {
+      "number": 65,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/65",
+      "title": "[AVAILABLE] [SH-H04] Implement the all-checks-plus-synthesis baseline"
+    },
+    "H05": {
+      "number": 66,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/66",
+      "title": "[AVAILABLE] [SH-H05] Build isolated experiment execution and scoring"
+    },
+    "H06": {
+      "number": 67,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/67",
+      "title": "[AVAILABLE] [SH-H06] Generate a real automatic harness proposal"
+    },
+    "H07": {
+      "number": 68,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/68",
+      "title": "[AVAILABLE] [SH-H07] Apply promotion rules and reuse the selected version"
+    },
+    "H08": {
+      "number": 69,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/69",
+      "title": "[AVAILABLE] [SH-H08] Publish transparent comparison results"
+    },
+    "U01": {
+      "number": 70,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/70",
+      "title": "[CLAIMED: codex-ui] [SH-U01] Build the application shell and mode indicators"
+    },
+    "U02": {
+      "number": 71,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/71",
+      "title": "[CLAIMED: codex-ui] [SH-U02] Build the coordinate-correct genome overview"
+    },
+    "U03": {
+      "number": 72,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/72",
+      "title": "[CLAIMED: codex-ui] [SH-U03] Integrate the locus browser"
+    },
+    "U04": {
+      "number": 73,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/73",
+      "title": "[CLAIMED: codex-ui] [SH-U04] Build the reference-base strip"
+    },
+    "U05": {
+      "number": 74,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/74",
+      "title": "[CLAIMED: codex-ui] [SH-U05] Connect overview, chromosome, locus and sequence zoom"
+    },
+    "U06": {
+      "number": 75,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/75",
+      "title": "[CLAIMED: codex-ui] [SH-U06] Build candidate conclusions and comparison cards"
+    },
+    "U07": {
+      "number": 76,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/76",
+      "title": "[CLAIMED: codex-ui] [SH-U07] Build the stable investigation DAG"
+    },
+    "U08": {
+      "number": 77,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/77",
+      "title": "[CLAIMED: codex-ui] [SH-U08] Build evidence and numerical-result inspection"
+    },
+    "U09": {
+      "number": 78,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/78",
+      "title": "[CLAIMED: codex-ui] [SH-U09] Implement the event reducer and reconnect behavior"
+    },
+    "U10": {
+      "number": 79,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/79",
+      "title": "[CLAIMED: codex-ui] [SH-U10] Implement deterministic timeline replay"
+    },
+    "U11": {
+      "number": 80,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/80",
+      "title": "[AVAILABLE] [SH-U11] Add cinematic genome-follow cues"
+    },
+    "U12": {
+      "number": 81,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/81",
+      "title": "[CLAIMED: codex-ui] [SH-U12] Build the harness-change comparison drawer"
+    },
+    "U13": {
+      "number": 82,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/82",
+      "title": "[AVAILABLE] [SH-U13] Build the presentation and dossier flow"
+    },
+    "U14": {
+      "number": 83,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/83",
+      "title": "[AVAILABLE] [SH-U14] Verify projection readability and motion behavior"
+    },
+    "Q01": {
+      "number": 84,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/84",
+      "title": "[AVAILABLE] [SH-Q01] Run the first real candidate end to end"
+    },
+    "Q02": {
+      "number": 85,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/85",
+      "title": "[AVAILABLE] [SH-Q02] Run scientific correctness and honest-unknown journeys"
+    },
+    "Q03": {
+      "number": 86,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/86",
+      "title": "[AVAILABLE] [SH-Q03] Exercise actual crash recovery"
+    },
+    "Q04": {
+      "number": 87,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/87",
+      "title": "[AVAILABLE] [SH-Q04] Exercise revision during active work"
+    },
+    "Q05": {
+      "number": 88,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/88",
+      "title": "[AVAILABLE] [SH-Q05] Exercise idempotency, invalid plans and budgets"
+    },
+    "Q06": {
+      "number": 89,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/89",
+      "title": "[AVAILABLE] [SH-Q06] Exercise answer-key and tool-access isolation"
+    },
+    "Q07": {
+      "number": 90,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/90",
+      "title": "[AVAILABLE] [SH-Q07] Prove structural adaptation executes"
+    },
+    "Q08": {
+      "number": 91,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/91",
+      "title": "[AVAILABLE] [SH-Q08] Prove replay equals committed state"
+    },
+    "Q09": {
+      "number": 92,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/92",
+      "title": "[AVAILABLE] [SH-Q09] Prove the genome zoom remains truthful"
+    },
+    "Q10": {
+      "number": 93,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/93",
+      "title": "[AVAILABLE] [SH-Q10] Exercise bounded context over accumulated history"
+    },
+    "Q11": {
+      "number": 94,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/94",
+      "title": "[AVAILABLE] [SH-Q11] Produce the canonical real demonstration run"
+    },
+    "Q12": {
+      "number": 95,
+      "url": "https://github.com/LifeDisparity/MongoDB_F2026/issues/95",
+      "title": "[AVAILABLE] [SH-Q12] Perform the final adversarial claim review"
     }
   },
   "board": {

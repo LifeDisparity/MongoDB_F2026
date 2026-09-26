@@ -37,7 +37,7 @@ Do not close a ticket because a module exists. Mock fixtures, deterministic oper
 
 - Integrator: `shared/`, dependency manifests/locks, `scripts/safe_harbor_dev.py`, root docs. Schema version 1 is published.
 - Data ingestion: `backend/safe_harbor/science/ingest.py`, `science/__init__.py`, `science/catalog.py`, `data/safe_harbor/`; D01-D04 are claimed. Coordinate D05-D07 tool imports with Data; put calculations in `science/calculations.py`, bounded tools in `science/tools.py`.
-- Runtime foundation: `backend/safe_harbor/runtime/ledger.py`, `runtime/compiler.py`, `backend/safe_harbor/api.py`; R01-R04 are claimed. R05-R12 are available but reserve a distinct module and coordinate imports with the runtime owner.
+- Runtime foundation: `backend/safe_harbor/runtime/ledger.py`, `runtime/compiler.py`, `runtime/coordinator.py`, `runtime/worker.py`, `runtime/revisions.py`, `backend/safe_harbor/api.py`; R01-R09 are claimed. R10-R12 are available but reserve a distinct module and coordinate imports with the runtime owner.
 - UI: `frontend/src/safe-harbor/` except a future standalone `cues.ts`/presentation module, plus entry/CSS/proxy config. U01-U10 and U12 are claimed because drafts share these files. U11, U13, U14 are available with integration coordination.
 - Harness/evaluation: `backend/safe_harbor/harness/`, `backend/safe_harbor/evaluation/`; available. Runtime expects `safe_harbor.harness.get_harness(hash=None)` and `list_harnesses()` returning v1 role specs. Current old Living Atlas PRs are reference work, not automatic ownership/acceptance of Safe Harbor tickets.
 - E2E: `e2e/safe_harbor/`; available, no unit/component suites.
