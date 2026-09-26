@@ -77,6 +77,14 @@ class OntologyResolver:
                       ontologies: tuple[str, ...] = ("FBbt", "FBdv")) -> "OntologyResolver":
         path = Path(path).resolve()
         manifest = json.loads(path.read_text(encoding="utf-8"))
+        if type(manifest.get("schema_version")) is not int or manifest["schema_version"] != 1:
+            raise ValueError("Unsupported ontology manifest version")
+        dataset = manifest.get("dataset", {})
+        if (not isinstance(dataset, dict)
+                or dataset.get("repository") != "anonymous-042/flyaoc"
+                or not isinstance(dataset.get("revision"), str)
+                or not re.fullmatch(r"[0-9a-f]{40}", dataset["revision"])):
+            raise ValueError("Ontology inputs require the approved dataset and a full commit pin")
         cache = Path(cache_dir) if cache_dir else path.parent.parent / "raw/flyaoc"
         resolver = cls()
         for ontology in ontologies:
@@ -84,6 +92,10 @@ class OntologyResolver:
                 raise ValueError("Only pinned FBbt and FBdv lookup is available")
             filename = _FILES[ontology]
             spec = manifest["dataset"]["files"][filename]
+            if (not isinstance(spec, dict) or spec.get("role") != "ontology"
+                    or not isinstance(spec.get("sha256"), str)
+                    or not re.fullmatch(r"[0-9a-f]{64}", spec["sha256"])):
+                raise ValueError(f"Ontology file requires an explicit full SHA-256: {ontology}")
             candidate = cache / filename
             # Initial operator downloads used flat cache names; both layouts
             # must verify the identical full pin before any terms are indexed.

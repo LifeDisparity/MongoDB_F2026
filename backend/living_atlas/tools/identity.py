@@ -66,7 +66,9 @@ class GeneResolver:
             raise ValueError("An explicit taxon is required")
         mention = mention.strip()
         taxon = {"7227": "NCBITaxon:7227", "Drosophila melanogaster": "NCBITaxon:7227"}.get(taxon.strip(), taxon.strip())
-        identifier = mention.removeprefix("FB:").removeprefix("FLYBASE:")
+        # Accept a single known provider prefix, not stacked namespaces such
+        # as FB:FLYBASE:FBgn... that are not valid FlyBase identifiers.
+        identifier = re.sub(r"^(?:FB|FLYBASE):", "", mention, count=1)
         if identifier in self._primary:
             candidates = [self._primary[identifier]]
             match_type = "primary_id"
