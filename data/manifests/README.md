@@ -70,10 +70,13 @@ Follow a returned cursor with the same request. All model-visible search/read
 responses are measured using AGR's bounded-result utilities. Oversized single
 spans produce an explicit budget error; no text is silently truncated.
 
-`record_evidence` accepts only spans returned by that tool session, rejects
-changed versions and forged IDs, and returns canonical Evidence contract
-records. It does not commit them. A resumed worker should re-read the chunk to
-obtain spans in its new session. `evidence_detail(evidence_id)` reconstructs
+`record_evidence` accepts only complete canonical spans generated from the
+immutable catalog, rejects changed versions and forged IDs, and returns
+canonical Evidence contract records. It does not commit them. A fresh process
+regenerates the same canonical span index, so previously returned span IDs can
+be retried after restart without an in-memory issuance ledger. The full source
+version and chunk hash, exact canonical span membership, and AGR offset/text
+hash checks remain authoritative. `evidence_detail(evidence_id)` reconstructs
 the canonical quote and source metadata; the API must first establish that the
 requested evidence was accepted in the specified run. This separation prevents
 an arbitrary valid source span from masquerading as accepted evidence.

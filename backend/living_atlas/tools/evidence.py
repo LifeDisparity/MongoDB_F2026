@@ -51,7 +51,6 @@ class EvidenceTools:
             raise ValueError("Tool result budget must be between 2048 and 65536 bytes")
         self.catalog = catalog
         self.max_result_bytes = max_result_bytes
-        self._issued: set[str] = set()
         self._evidence: dict[str, dict] = {}
         self._span_lookup: dict[str, dict] = {}
         self._chunk_spans: dict[str, list[dict]] = {}
@@ -153,7 +152,6 @@ class EvidenceTools:
                                  budget=self.max_result_bytes)
         except ToolResultBudgetError as error:
             return budget_failure(tool_name="read_chunk", measured=error.measured, limit=error.limit)
-        self._issued.update(span["span_id"] for span in result["spans"])
         return result
 
     def record_evidence(self, span_ids: list[str], source_version: str) -> list[dict]:
@@ -163,8 +161,13 @@ class EvidenceTools:
             raise ValueError("Span IDs must be unique strings")
         result = []
         for span_id in span_ids:
-            if span_id not in self._issued or span_id not in self._span_lookup:
-                raise ValueError("Select only server-issued spans from read_chunk")
+            # The immutable catalog regenerates precisely the same IDs in a
+            # fresh process. Membership proves this is a complete canonical
+            # span that read_chunk can return, without an ephemeral issuance
+            # ledger that would reject a retry after restart. AGR resolution
+            # additionally checks exact chunk identity, offsets and text hash.
+            if span_id not in self._span_lookup:
+                raise ValueError("Select only canonical spans returned by read_chunk")
             parsed = parse_evidence_span_id(span_id)
             chunk = self.catalog.get_chunk(parsed.chunk_id, source_version)
             span = resolve_evidence_span_id(
