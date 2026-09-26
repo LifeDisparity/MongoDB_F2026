@@ -1,0 +1,92 @@
+{
+  "artifact": "la-08-la-17-e2e",
+  "baseline_policy_version": "pol_655339ee84154665",
+  "checks": [
+    {
+      "check": "baseline policy is content-addressed and mode is ranked_passages",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "packet stays within its token budget",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "every included passage keeps a direct original reference",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "original passage is retrievable and hash-exact after resume",
+      "detail": "E1 sha256=d4000fb8f421...",
+      "passed": true
+    },
+    {
+      "check": "tiny budget truncates and every omitted passage stays retrievable",
+      "detail": "included=1 omitted=2",
+      "passed": true
+    },
+    {
+      "check": "allowed proposal yields a new version linked to its parent",
+      "detail": "pol_655339ee84154665 -> pol_379347d4610de348",
+      "passed": true
+    },
+    {
+      "check": "the two modes lead with different passages under the identical budget",
+      "detail": "ranked->ex_intro, experimental->ex_result, identical budget=True",
+      "passed": true
+    },
+    {
+      "check": "forbidden budget change is rejected",
+      "detail": "immutable_field_change",
+      "passed": true
+    },
+    {
+      "check": "forbidden model change is rejected",
+      "detail": "immutable_field_change",
+      "passed": true
+    },
+    {
+      "check": "forbidden evaluator change is rejected",
+      "detail": "immutable_field_change",
+      "passed": true
+    },
+    {
+      "check": "forbidden unknown_field change is rejected",
+      "detail": "immutable_field_change",
+      "passed": true
+    },
+    {
+      "check": "tampered version is detected",
+      "detail": "integrity_mismatch",
+      "passed": true
+    }
+  ],
+  "duration_seconds": 0.001,
+  "experimental_packet": {
+    "included_count": 3,
+    "mode": "experimental_context",
+    "omitted_count": 0,
+    "token_budget": 1200,
+    "tokens_used": 91,
+    "truncated": false
+  },
+  "generated_at": "2026-09-26T17:29:54Z",
+  "labelled": "synthetic engineering fixture; not a scientific or model measurement",
+  "proposed_policy_version": "pol_379347d4610de348",
+  "ranked_packet": {
+    "included_count": 3,
+    "mode": "ranked_passages",
+    "omitted_count": 0,
+    "token_budget": 1200,
+    "tokens_used": 91,
+    "truncated": false
+  },
+  "result": "pass",
+  "run_id": "run-la08-la17-e2e",
+  "tickets": [
+    "LA-08",
+    "LA-17"
+  ]
+}
