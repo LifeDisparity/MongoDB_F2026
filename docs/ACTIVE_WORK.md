@@ -10,6 +10,9 @@ Base: published Living Atlas bootstrap (PR #31).
 | Codex data/evidence | LA-04, LA-06 | Pinned source import, rights and canonical evidence tools |
 | Codex storage/events | LA-11, LA-13 | MongoDB persistence, atomic operations and ordered events |
 | Codex frontend | LA-20, LA-21, LA-22, LA-23 | Workspace, stable graph, inspector, live/replay |
+| Codex data/science, wave 2 | LA-05, LA-07 | Frozen identity/ontology lookup and shared scientific prompts |
+| Codex model adapter, wave 2 | LA-09 | Structured provider responses, usage and bounded failures |
+| Codex frontend, wave 2 | LA-24 | Persisted policy differences and measured evaluation display |
 
 Separate worktrees and ticket branches isolate each writer. Shared contracts and
 root configuration remain integrator-owned. Do not take these tickets without
