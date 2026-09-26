@@ -12,6 +12,7 @@ dependencies = [
   "uvicorn[standard]>=0.34,<1",
   "pydantic>=2,<3",
   "pymongo>=4.12,<4.19",
+  "openai==3.19.2",
 ]
 
 [project.optional-dependencies]
