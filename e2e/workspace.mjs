@@ -80,6 +80,16 @@ try {
   assert.equal(initial.last_sequence, 1);
   assert(initial.claims.every(claim => claim.status === 'supported'));
   checks.push('Browser created labeled fixture in real MongoDB');
+  await page.waitForFunction(() => {
+    const canvas = document.querySelector('.graph-canvas')?.getBoundingClientRect();
+    const nodes = [...document.querySelectorAll('.react-flow__node')];
+    return canvas && nodes.length === 8 && nodes.every(node => {
+      const box = node.getBoundingClientRect();
+      return box.top >= canvas.top - 1 && box.bottom <= canvas.bottom + 1 &&
+        box.left >= canvas.left - 1 && box.right <= canvas.right + 1;
+    });
+  });
+  checks.push('All graph nodes fit within the canvas at 1440×900');
   await page.screenshot({ path: path.join(artifactDir, '01-initial.png'), fullPage: true });
 
   await page.getByRole('button', { name: /S1.*Synthetic engineering source/ }).last().click();
@@ -157,6 +167,7 @@ try {
 
   await page.getByRole('button', { name: /S1.*Synthetic engineering source/ }).last().click();
   await page.getByRole('button', { name: 'Restore source availability' }).click();
+  await page.getByRole('button', { name: 'Simulate source withdrawal' }).waitFor();
   const restored = await json('/runs/' + runId + '/snapshot');
   assert.equal(restored.claims.find(row => row.claim_id === 'A').status, 'needs_review');
   assert.equal(restored.claims.find(row => row.claim_id === 'B').status, 'supported');
@@ -202,7 +213,7 @@ try {
   await page.reload();
   await page.getByRole('button', { name: /PMC3345284.*Teneurins/ }).last().click();
   await page.getByRole('button', { name: /Inspect pinned passage 1/ }).click();
-  await page.getByText('Server-reconstructed span', { exact: true }).waitFor();
+  await page.getByText('Server-reconstructed', { exact: true }).waitFor();
   checks.push('Fresh API process accepts canonical span retry without duplicate evidence and browser reopens pinned evidence');
 
   const badVersion = await fetch(apiUrl + '/runs/' + sourceRun + '/evidence', post({ ...pinBody, operation_id: 'bad-version', source_version: '0'.repeat(64) }));
