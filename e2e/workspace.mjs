@@ -206,9 +206,14 @@ try {
   const ambiguous = await json('/tools/resolve-gene?mention=Teneurin');
   assert.equal(ambiguous.status, 'ambiguous');
   assert.equal(ambiguous.candidate_count, 2);
-  for (const candidate of ambiguous.candidates) {
-    assert.equal((await json('/tools/resolve-gene?mention=' + candidate.gene_id)).gene_id, candidate.gene_id);
+  for (const mention of ['Teneurin', 'Lola', 'e']) {
+    const result = await json('/tools/resolve-gene?mention=' + mention);
+    assert.equal(result.status, 'ambiguous');
+    for (const candidate of result.candidates) {
+      assert.equal((await json('/tools/resolve-gene?mention=' + candidate.gene_id)).gene_id, candidate.gene_id);
+    }
   }
+  assert.equal((await json('/tools/resolve-gene?mention=FB%3AFLYBASE%3AFBgn0267001')).status, 'not_found');
   assert.equal((await json('/tools/resolve-gene?mention=Ten-a&taxon=NCBITaxon%3A9606')).status, 'taxon_mismatch');
   const ambiguousSearch = await fetch(apiUrl + '/runs/' + sourceRun + '/search?gene_id=Teneurin&query=matching');
   assert.equal(ambiguousSearch.status, 422);
@@ -221,7 +226,7 @@ try {
   assert.equal(obsolete.term_id, null);
   assert.deepEqual(obsolete.candidates[0].replaced_by, ['FBdv:00005330']);
   assert.equal((await json('/tools/resolve-term?mention=adult%20stage%20I&ontology=FBdv')).status, 'not_found');
-  checks.push('Pinned lookup resolves gene/term identity, preserves aliases and taxon ambiguity, and leaves obsolete/broad terms unaccepted');
+  checks.push('Pinned lookup resolves gene/term identity and all returned candidate IDs, preserves alias/taxon ambiguity, and leaves obsolete terms and non-exact synonyms unaccepted');
   await page.screenshot({ path: path.join(artifactDir, '03-sources.png'), fullPage: true });
 
   await page.getByRole('button', { name: /PMC3345284.*Teneurins/ }).last().click();
@@ -273,7 +278,7 @@ try {
     result: 'passed', scope: 'Engineering browser/API/local MongoDB E2E; no model, Atlas or LangGraph execution',
     run_id: runId, source_run_id: sourceRun, database,
     commit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
-    manifest_sha256: createHash('sha256').update(await readFile(path.join(root, 'data/manifests/showcase.json'))).digest('hex'),
+    source_manifest_file_sha256: createHash('sha256').update(await readFile(path.join(root, 'data/manifests/showcase.json'))).digest('hex'),
     source_versions: sources.sources.map(row => ({ source_id: row.source_id, source_version: row.source_version })),
     model_id: null, policy_version: 'fixture-v1 (engineering fixture only)',
     started_at: new Date(startedAt).toISOString(), duration_seconds: (Date.now() - startedAt) / 1000,
