@@ -136,7 +136,7 @@ class RunSnapshot(WireModel):
     evaluations: list[Evaluation] = Field(default_factory=list)
 
 EventType = Literal[
-    "run.created", "investigation.created", "decision.recorded",
+    "run.created", "investigation.created", "investigation.updated", "decision.recorded",
     "evidence.upserted", "claim.upserted", "source.availability_changed",
     "worker.resumed", "policy.proposed", "evaluation.completed",
     "policy.promoted", "policy.rejected", "run.completed",

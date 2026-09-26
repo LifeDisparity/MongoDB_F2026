@@ -92,6 +92,7 @@ type, payload.
 Types:
 run.created
 investigation.created
+investigation.updated
 decision.recorded
 evidence.upserted
 claim.upserted
