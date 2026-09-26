@@ -1,0 +1,68 @@
+{
+  "artifact": "la-18-e2e",
+  "baseline_policy_version": "pol_655339ee84154665",
+  "checks": [
+    {
+      "check": "candidate is promoted and becomes the selected policy",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "promoted candidate links to its parent and development evidence",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "events record policy.proposed then policy.promoted",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "no candidate is promoted and baseline is retained",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "at most two candidates are attempted",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "a proposal with no real failure link is rejected before evaluation",
+      "detail": "",
+      "passed": true
+    },
+    {
+      "check": "forbidden budget patch rejected in optimizer",
+      "detail": "invalid_patch",
+      "passed": true
+    },
+    {
+      "check": "forbidden model patch rejected in optimizer",
+      "detail": "invalid_patch",
+      "passed": true
+    },
+    {
+      "check": "forbidden unknown patch rejected in optimizer",
+      "detail": "invalid_patch",
+      "passed": true
+    },
+    {
+      "check": "max_candidates > 2 is rejected",
+      "detail": "",
+      "passed": true
+    }
+  ],
+  "duration_seconds": 0.003,
+  "generated_at": "2026-09-26T17:39:53Z",
+  "labelled": "deterministic engineering proposer; not the canonical real-model run (E2E-2)",
+  "model_proposer_check": "skipped (optional provider SDK missing: No module named 'openai')",
+  "promoted_events": [
+    "policy.proposed",
+    "policy.promoted"
+  ],
+  "promoted_policy_version": "pol_379347d4610de348",
+  "rejection_attempts": 2,
+  "result": "pass",
+  "ticket": "LA-18"
+}
