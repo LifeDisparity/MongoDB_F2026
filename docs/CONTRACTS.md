@@ -90,7 +90,9 @@ schema_version, run_id, sequence, event_id, operation_id, occurred_at,
 type, payload.
 
 Types:
+run.created
 investigation.created
+investigation.updated
 decision.recorded
 evidence.upserted
 claim.upserted
@@ -105,6 +107,19 @@ run.completed
 Entity upserts contain complete entity payloads.
 The repository supplies global run IDs and sequences to domain events.
 
+run.created is the first event (sequence 1). Its payload is the complete initial
+RunSnapshot, including source metadata and availability overlays, with
+last_sequence = 1. This makes replay from empty state possible without copying
+current state backwards in time. Chunk text and private operation ledgers are
+never part of the public snapshot. Subsequent events are complete entity upserts.
+
+RunSnapshot includes schema_version, run_id, mode, created_at, last_sequence,
+sources, source_state, evidence, claims, investigations, decisions, policies,
+evaluations. Modes: fixture (synthetic), sources (imported papers, no inferred
+claims), live (reserved for the configured scientific workflow).
+Event pages include run_id, events, last_sequence and has_more. The last_sequence
+is the captured committed watermark, not a prediction of future writes.
+
 ## API
 
 POST /runs
@@ -115,6 +130,19 @@ GET /runs/{id}/evaluations
 GET /runs/{id}/export
 POST /runs/{id}/resume
 POST /runs/{id}/demo-events/source-withdrawal
+GET /runs/{id}/search?gene_id={id_or_alias}&query={query}&cursor={cursor}
+GET /runs/{id}/chunks/{chunk_id}?source_version={version}&cursor={cursor}
+POST /runs/{id}/evidence
+GET /tools/resolve-gene?mention={mention}&taxon={taxon}
+GET /tools/resolve-term?mention={mention}&ontology={FBbt_or_FBdv}
+
+Evidence creation accepts span_ids, source_version and operation_id only.
+Lookup responses preserve explicit ambiguity, taxon mismatch and obsolete terms;
+lookup does not certify a scientific assertion. Source search rejects ambiguous
+aliases with gene_ambiguous and candidates instead of choosing a gene silently.
+Health exposes model_adapter.configured separately from scientific_workflow;
+configuration alone does not verify provider credentials or inference. Resume
+returns workflow_not_configured (HTTP 501) until the durable workflow is connected.
 
 Snapshot includes last_sequence.
 Use a consistent snapshot and event watermark.

@@ -1,0 +1,48 @@
+{
+  "result": "passed",
+  "scope": "Engineering browser/API/local MongoDB E2E; no model, Atlas or LangGraph execution",
+  "run_id": "run_8d9183f81c3d686bd63f03d0",
+  "source_run_id": "run_6f448a7c5abcb6337302290d",
+  "database": "living_atlas_e2e_1790443003461",
+  "commit": "f75dac1ea45cf0473d19ccdb360aba5a3a90019c",
+  "manifest_sha256": "fa44eeb4867943fe8f7f72eca8cc7eb65089a243047463818787073942b8d7d6",
+  "source_versions": [
+    {
+      "source_id": "PMC3345284",
+      "source_version": "f675b30c711d09fd2f5b0c4f367af74b1d6920ea7fbf5922717373854c1acca5"
+    },
+    {
+      "source_id": "PMC4006830",
+      "source_version": "47741a13b64de80435a259d110b944611b26b13aa48f164e8e22147839b84977"
+    }
+  ],
+  "model_id": null,
+  "policy_version": "fixture-v1 (engineering fixture only)",
+  "started_at": "2026-09-26T17:16:43.461Z",
+  "duration_seconds": 4.08,
+  "checks": [
+    "Browser created labeled fixture in real MongoDB",
+    "All graph nodes fit within the canvas at 1440×900",
+    "Source withdrawal: A loses sole support; B retains S2; C unchanged; old evidence inspectable",
+    "Accepted operation retry deduplicates; changed payload under same ID rejects",
+    "Browser replay restores initial support and disables writes; return to live restores withdrawn state",
+    "Downloaded dossier independently matches current snapshot without article text",
+    "Actual API process SIGKILL/restart retains accepted state and browser reconnects (not workflow recovery)",
+    "Actual browser reducer replays persisted log exactly, recovers missing events and deduplicates deliveries",
+    "Restoring source availability requires review and does not automatically recertify A",
+    "Browser imports two real pinned source records without fabricated claims",
+    "Real paper search → canonical span read → browser pin → MongoDB evidence → exact quote/hash reconstruction",
+    "Fresh API process accepts canonical span retry without duplicate evidence and browser reopens pinned evidence",
+    "Changed source version and forged span rejected; invalid request fields are not echoed"
+  ],
+  "manifest_hash_basis": "SHA-256 of exact showcase.json file bytes; the tool catalog additionally uses a canonical-JSON manifest hash.",
+  "screenshots": [
+    "wave1-fixture-initial.png",
+    "wave1-fixture-withdrawn.png"
+  ],
+  "limitations": [
+    "Local MongoDB only; Atlas not configured",
+    "No model call, benchmark, policy promotion, or LangGraph worker recovery",
+    "Source excerpts and private service logs intentionally excluded"
+  ]
+}

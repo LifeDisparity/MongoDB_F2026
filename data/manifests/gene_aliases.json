@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "scope": "Development source cohort plus Ten-m and exact alias collisions; no benchmark labels",
+  "match_rule": "case_sensitive_exact",
+  "source": {
+    "provider": "FlyBase",
+    "release": "FB2026_03",
+    "url": "https://s3ftp.flybase.org/releases/FB2026_03/precomputed_files/synonyms/fb_synonym_fb_2026_03.tsv.gz",
+    "sha256": "e229f1a3be7124fa04fd70e04db4432e9bddcde38408d8840af2caedd002ecce",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "source_table": "FlyBase Symbol-Synonym Correspondence Table",
+    "selected_taxon": "NCBITaxon:7227",
+    "dmel_gene_rows_inspected": 32192
+  },
+  "genes": [
+    {
+      "gene_id": "FBgn0004449",
+      "symbol": "Ten-m",
+      "name": "Tenascin major",
+      "taxon": "NCBITaxon:7227",
+      "aliases": [
+        "2017",
+        "5301",
+        "BcDNA:AT25108",
+        "CG11452",
+        "CG5723",
+        "CT16449",
+        "Odz",
+        "Ten-M",
+        "Ten-mc",
+        "Ten79E",
+        "Ten[m]",
+        "Tenascin-major",
+        "Teneurin",
+        "Teneurin-m",
+        "l(3)00844",
+        "l(3)05301",
+        "l(3)05309",
+        "l(3)rJ307",
+        "l(3)rL201",
+        "l(3)rP126",
+        "odd Oz",
+        "odd(Oz)",
+        "odd-Oz",
+        "odz",
+        "odz/ten-m",
+        "ten(m)",
+        "ten-m",
+        "ten-m/odz",
+        "ten[m]",
+        "tenascin major",
+        "tenascin-like molecule major",
+        "tenascin-major"
+      ]
+    },
+    {
+      "gene_id": "FBgn0267001",
+      "symbol": "Ten-a",
+      "name": "Tenascin accessory",
+      "taxon": "NCBITaxon:7227",
+      "aliases": [
+        "1.2",
+        "CG11270",
+        "CG12720",
+        "CG15733",
+        "CG18182",
+        "CG2578",
+        "CG2590",
+        "CG32659",
+        "CG42338",
+        "DmtenA",
+        "Dmtena",
+        "Ten11A",
+        "Ten[a]",
+        "Teneurin",
+        "Teneurin-a",
+        "cbd",
+        "central body defect",
+        "central-body-defect",
+        "ten-a",
+        "tenA",
+        "tenA(AT)[[14]]",
+        "ten[a]",
+        "tenascin-like molecule accessory"
+      ]
+    },
+    {
+      "gene_id": "FBgn0283521",
+      "symbol": "lola",
+      "name": "longitudinals lacking",
+      "taxon": "NCBITaxon:7227",
+      "aliases": [
+        "BEST:LD03274",
+        "BTB-IV",
+        "BTB-protein-IV",
+        "BcDNA:LD17006",
+        "BcDNA:RH31485",
+        "BtbIV",
+        "CG12052",
+        "CG18376",
+        "CG18378",
+        "CG18379",
+        "CG18380",
+        "CG18381",
+        "CG30012",
+        "CG30013",
+        "CG30014",
+        "LD03274",
+        "LOLA",
+        "Lola",
+        "Longitudinal lacking",
+        "Longitudinals lacking",
+        "NEST:bs06a08",
+        "SGP cluster fusion defects 7",
+        "bs06a08.y1",
+        "btb",
+        "bumper-to-bumper",
+        "e",
+        "eyeful",
+        "fus7",
+        "l(2)00642",
+        "l(2)s3697",
+        "lola",
+        "longitudinal lacking",
+        "longitudinals absent",
+        "longitudinals-lacking",
+        "misguided",
+        "sw59"
+      ]
+    }
+  ],
+  "ambiguous_aliases": {
+    "1.2": [
+      {
+        "gene_id": "FBgn0023041",
+        "symbol": "l(2)46Eb",
+        "name": "lethal (2) 46Eb",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0267001",
+        "symbol": "Ten-a",
+        "name": "Tenascin accessory",
+        "taxon": "NCBITaxon:7227"
+      }
+    ],
+    "Lola": [
+      {
+        "gene_id": "FBgn0263102",
+        "symbol": "psq",
+        "name": "pipsqueak",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0283521",
+        "symbol": "lola",
+        "name": "longitudinals lacking",
+        "taxon": "NCBITaxon:7227"
+      }
+    ],
+    "Teneurin": [
+      {
+        "gene_id": "FBgn0004449",
+        "symbol": "Ten-m",
+        "name": "Tenascin major",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0267001",
+        "symbol": "Ten-a",
+        "name": "Tenascin accessory",
+        "taxon": "NCBITaxon:7227"
+      }
+    ],
+    "e": [
+      {
+        "gene_id": "FBgn0000527",
+        "symbol": "e",
+        "name": "ebony",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0283521",
+        "symbol": "lola",
+        "name": "longitudinals lacking",
+        "taxon": "NCBITaxon:7227"
+      }
+    ],
+    "eyeful": [
+      {
+        "gene_id": "FBgn0263102",
+        "symbol": "psq",
+        "name": "pipsqueak",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0283521",
+        "symbol": "lola",
+        "name": "longitudinals lacking",
+        "taxon": "NCBITaxon:7227"
+      }
+    ],
+    "misguided": [
+      {
+        "gene_id": "FBgn0002525",
+        "symbol": "Lam",
+        "name": "Lamin",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0015508",
+        "symbol": "lali",
+        "name": "lali",
+        "taxon": "NCBITaxon:7227"
+      },
+      {
+        "gene_id": "FBgn0283521",
+        "symbol": "lola",
+        "name": "longitudinals lacking",
+        "taxon": "NCBITaxon:7227"
+      }
+    ]
+  }
+}
