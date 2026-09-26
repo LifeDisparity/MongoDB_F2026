@@ -22,8 +22,16 @@ export function App() {
     if (!showStart || !startDialog.current) return;
     const dialog = startDialog.current;
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const keepTabInside = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const controls = [...dialog.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])')].filter(element => element.offsetParent !== null);
+      const first = controls[0], last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first && last) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last && first) { event.preventDefault(); first.focus(); }
+    };
+    dialog.addEventListener('keydown', keepTabInside);
     dialog.showModal();
-    return () => { dialog.close(); if (opener?.isConnected) opener.focus(); };
+    return () => { dialog.removeEventListener('keydown', keepTabInside); dialog.close(); if (opener?.isConnected) opener.focus(); };
   }, [showStart]);
   const run = useRun(runId);
   const snapshot = run.snapshot;
