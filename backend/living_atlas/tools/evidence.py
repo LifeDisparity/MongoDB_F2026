@@ -78,7 +78,8 @@ class EvidenceTools:
 
     def search_evidence(self, gene_id: str, query: str,
                         section_types: list[str] | None = None,
-                        cursor: str | None = None) -> dict:
+                        cursor: str | None = None, *,
+                        available_sources: set[tuple[str, str]] | None = None) -> dict:
         if not isinstance(query, str) or len(query) > 2000:
             raise ValueError("Query must be a string of at most 2000 characters")
         if section_types is not None and (
@@ -91,6 +92,10 @@ class EvidenceTools:
         matches = []
         for chunk in self.catalog.chunks:
             if chunk["source_id"] not in source_ids or (kinds and chunk["section_type"] not in kinds):
+                continue
+            if available_sources is not None and (
+                chunk["source_id"], chunk["source_version"]
+            ) not in available_sources:
                 continue
             words = set(re.findall(r"[\w-]+", chunk["text"].casefold()))
             score = len(terms & words)
@@ -105,7 +110,10 @@ class EvidenceTools:
                 "read_tool": "read_chunk",
             })
         matches.sort(key=lambda row: (-row["score"], row["chunk_id"]))
-        scope = _hash([self.catalog.manifest_sha256, gene_id, query, sorted(kinds)])
+        scope = _hash([
+            self.catalog.manifest_sha256, gene_id, query, sorted(kinds),
+            sorted(available_sources) if available_sources is not None else None,
+        ])
         start = _offset(cursor, scope, len(matches))
 
         def render(page: list, count: int) -> dict:
