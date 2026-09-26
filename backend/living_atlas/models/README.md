@@ -58,11 +58,27 @@ at most the configured attempts occur inside an overall deadline.
 
 The checkpoint callback receives `stage: reserved` **before** generation and
 `stage: settled` afterward. Persist reservations atomically before returning
-from the callback. If persistence fails, inference does not start. If the
+from the callback. Both records include `expected_budget`, the exact durable
+predecessor: the workflow **must compare-and-swap this predecessor** and append
+the attempt record in the same transaction. It must serialize work per
+investigation; blindly overwriting the budget permits concurrent overspending.
+The adapter alone does not enforce cross-process concurrency.
+
+An already-recorded reservation is not permission to perform inference again.
+If an operation ledger reports a replayed reservation, the callback must fail
+the fresh call or let the workflow resume/reconcile the existing attempt. A
+subsequent physical call needs a new reservation from the latest budget.
+Do not treat `request_id` as provider inference idempotency.
+
+If persistence fails, inference does not start. If the
 process dies or is cancelled after reservation, keep the pending usage unknown;
 the reservation prevents a fresh worker from spending that budget again.
 Reconcile with provider records when possible. The adapter does not promise
 exactly-once inference or provide a scheduler.
+`model_calls` counts admission reservations, including interrupted calls that
+may never have reached the provider; it is not a measured successful-call count.
+Callback omission is only suitable for a caller that owns the budget in one
+process and does not claim durable recovery.
 
 Usage reported by the provider is retained even when output is refused,
 incomplete or fails Pydantic validation. Timeout/connection/server errors can

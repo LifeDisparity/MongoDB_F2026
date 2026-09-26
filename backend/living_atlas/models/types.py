@@ -82,6 +82,7 @@ class ModelFailure(FrozenRecord):
 class AttemptRecord(FrozenRecord):
     attempt: int = Field(ge=1)
     stage: Literal["reserved", "settled"]
+    expected_budget: ModelBudget
     started_at: str
     duration_seconds: float = Field(default=0.0, ge=0)
     outcome: str

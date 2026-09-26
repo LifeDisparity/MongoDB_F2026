@@ -145,6 +145,7 @@ class StructuredModelAdapter:
         schema_hash = _digest(schema)
         attempts = []
         current = budget
+        persisted_predecessor = budget
 
         def result(status, failure=None, output=None):
             return ModelResult[response_model](
@@ -200,7 +201,8 @@ class StructuredModelAdapter:
             reserved = input_tokens + max_output
             attempt_started = time.monotonic()
             record = AttemptRecord(
-                attempt=number, stage="reserved", started_at=datetime.now(timezone.utc).isoformat(),
+                attempt=number, stage="reserved", expected_budget=persisted_predecessor,
+                started_at=datetime.now(timezone.utc).isoformat(),
                 outcome="in_flight", reserved_tokens=reserved, input_token_count=input_tokens,
                 max_output_tokens=max_output,
             )
@@ -212,6 +214,7 @@ class StructuredModelAdapter:
             if checkpoint is not None:
                 # A failed reservation write prevents inference from starting.
                 await checkpoint(record, current)
+            persisted_predecessor = current
             response = None
             failure = None
             output = None
@@ -250,6 +253,7 @@ class StructuredModelAdapter:
                         failure = ModelFailure(code="invalid_structured_output", message="The model output failed the required structured schema.")
             record = record.model_copy(update={
                 "stage": "settled", "duration_seconds": time.monotonic() - attempt_started,
+                "expected_budget": persisted_predecessor,
                 "outcome": "completed" if output is not None else "failed", "usage": usage,
                 "response_id": getattr(response, "id", None),
                 "provider_request_id": getattr(response, "_request_id", None) or failed_request_id,
@@ -259,6 +263,7 @@ class StructuredModelAdapter:
             attempts.append(record)
             if checkpoint is not None:
                 await checkpoint(record, current)
+            persisted_predecessor = current
             if output is not None:
                 return result("completed", output=output)
             if failure is None:
