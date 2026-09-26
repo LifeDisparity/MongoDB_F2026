@@ -6,3 +6,15 @@ node_modules/
 dist/
 coverage/
 *.log
+
+# Living Atlas generated/private files
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+data/raw/
+data/cache/
+artifacts/private/
+.env
+.env.*
+!.env.example
