@@ -90,6 +90,7 @@ schema_version, run_id, sequence, event_id, operation_id, occurred_at,
 type, payload.
 
 Types:
+run.created
 investigation.created
 decision.recorded
 evidence.upserted
@@ -104,6 +105,19 @@ run.completed
 
 Entity upserts contain complete entity payloads.
 The repository supplies global run IDs and sequences to domain events.
+
+run.created is the first event (sequence 1). Its payload is the complete initial
+RunSnapshot, including source metadata and availability overlays, with
+last_sequence = 1. This makes replay from empty state possible without copying
+current state backwards in time. Chunk text and private operation ledgers are
+never part of the public snapshot. Subsequent events are complete entity upserts.
+
+RunSnapshot includes schema_version, run_id, mode, created_at, last_sequence,
+sources, source_state, evidence, claims, investigations, decisions, policies,
+evaluations. Modes: fixture (synthetic), sources (imported papers, no inferred
+claims), live (reserved for the configured scientific workflow).
+Event pages include run_id, events, last_sequence and has_more. The last_sequence
+is the captured committed watermark, not a prediction of future writes.
 
 ## API
 
