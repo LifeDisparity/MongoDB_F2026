@@ -7,6 +7,8 @@ import json
 import os
 from pathlib import Path
 from threading import Lock
+from functools import lru_cache
+from typing import Literal
 import uuid
 
 from fastapi import FastAPI, Query, Request
@@ -24,6 +26,7 @@ from living_atlas.repositories import (
     Conflict, IntegrityError, MongoRepository, NotFound, RepositoryError, RepositoryUnavailable,
 )
 from .fixtures import availability_fixture
+from living_atlas.models import StructuredModelAdapter
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 CATALOG_LOCK = Lock()
@@ -64,10 +67,15 @@ async def lifespan(app):
         raise RuntimeError("MONGODB_URI is required; use the documented development launcher.")
     repo = MongoRepository(uri, os.environ.get("MONGODB_DATABASE", "living_atlas"))
     try:
-        repo.ensure_indexes()
-        app.state.repo = repo
-        app.state.catalog_bundle = None
-        yield
+        model_adapter = StructuredModelAdapter.from_env()
+        try:
+            repo.ensure_indexes()
+            app.state.repo = repo
+            app.state.model_adapter = model_adapter
+            app.state.catalog_bundle = None
+            yield
+        finally:
+            await model_adapter.close()
     finally:
         repo.close()
 
@@ -114,9 +122,35 @@ def sources_ready():
     except (OSError, ValueError, RuntimeError):
         return None
 
+@lru_cache(maxsize=1)
+def gene_resolver():
+    from living_atlas.tools.identity import GeneResolver
+    return GeneResolver.from_file(PROJECT_ROOT / "data/manifests/gene_aliases.json")
+
+@lru_cache(maxsize=2)
+def ontology_resolver(ontology: str):
+    from living_atlas.tools.ontology import OntologyResolver
+    manifest = Path(os.environ.get("LIVING_ATLAS_SOURCE_MANIFEST", PROJECT_ROOT / "data/manifests/showcase.json"))
+    cache_dir = Path(os.environ.get("SOURCE_CACHE_DIR", PROJECT_ROOT / "data/raw/flyaoc"))
+    return OntologyResolver.from_manifest(manifest, cache_dir=cache_dir, ontologies=(ontology,))
+
+@app.get("/tools/resolve-gene")
+def resolve_gene(mention: str = Query(min_length=1, max_length=200),
+                 taxon: str = Query("NCBITaxon:7227", max_length=100)):
+    return gene_resolver().resolve_gene(mention, taxon)
+
+@app.get("/tools/resolve-term")
+def resolve_term(mention: str = Query(min_length=1, max_length=300),
+                 ontology: Literal["FBbt", "FBdv"] = "FBbt"):
+    try:
+        return ontology_resolver(ontology).resolve_term(mention, ontology)
+    except OSError:
+        return error("ontology_import_required", "Import the pinned ontology files with --download --ontologies before resolving terms.", 409)
+
 @app.get("/health")
 def health():
     return {"status": "ok", "storage": app.state.repo.ping(), "schema_version": 1,
+            "model_adapter": app.state.model_adapter.status(),
             "demo_source_withdrawal": os.environ.get("ENABLE_DEMO_SOURCE_WITHDRAWAL", "").lower() == "true",
             "scientific_workflow": "not_configured"}
 
@@ -204,6 +238,15 @@ def search(run_id: str, gene_id: str = Query(min_length=1, max_length=200),
     loaded = sources_ready()
     if loaded is None:
         return error("source_import_required", "The pinned source cache is unavailable.", 409)
+    if not gene_id.startswith("FBgn"):
+        identity = gene_resolver().resolve_gene(gene_id)
+        if identity["status"] != "resolved":
+            return JSONResponse(ErrorEnvelope(
+                code="gene_" + identity["status"],
+                message="Gene mention is unresolved or ambiguous. Select an explicit FlyBase gene ID.",
+                details={"candidates": identity.get("candidates", [])},
+            ).model_dump(), status_code=422)
+        gene_id = identity["candidates"][0]["gene_id"]
     states = app.state.repo.snapshot(run_id)["source_state"]
     available = {(row["source_id"], row["source_version"]) for row in states if row["available"]}
     return loaded[1].search_evidence(gene_id, query, cursor=cursor, available_sources=available)
@@ -218,13 +261,16 @@ def read_chunk(run_id: str, chunk_id: str, source_version: str, cursor: str | No
         return error("source_import_required", "The pinned source cache is unavailable.", 409)
     try:
         chunk = loaded[0].get_chunk(chunk_id, source_version)
-        states = app.state.repo.snapshot(run_id)["source_state"]
-        if not any(row["available"] and row["source_id"] == chunk["source_id"]
-                   and row["source_version"] == source_version for row in states):
-            return error("source_unavailable", "This source is withdrawn. Previously accepted evidence remains inspectable.", 409)
-        return loaded[1].read_chunk(chunk_id, source_version, cursor)
-    except KeyError:
-        return error("not_found", "Source chunk not found.", 404)
+    except ValueError as exc:
+        # Preserve version/hash failures as validation errors; only absence is 404.
+        if str(exc) == "Unknown chunk":
+            return error("not_found", "Source chunk not found.", 404)
+        raise
+    states = app.state.repo.snapshot(run_id)["source_state"]
+    if not any(row["available"] and row["source_id"] == chunk["source_id"]
+               and row["source_version"] == source_version for row in states):
+        return error("source_unavailable", "This source is withdrawn. Previously accepted evidence remains inspectable.", 409)
+    return loaded[1].read_chunk(chunk_id, source_version, cursor)
 
 @app.post("/runs/{run_id}/evidence")
 def record_evidence(run_id: str, body: RecordEvidence):

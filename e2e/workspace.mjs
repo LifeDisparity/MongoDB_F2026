@@ -24,6 +24,9 @@ const env = {
   MONGODB_URI: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27019/?replicaSet=living-atlas-dev',
   MONGODB_DATABASE: database,
   ENABLE_DEMO_SOURCE_WITHDRAWAL: 'true',
+  // This engineering run must not consume provider credentials or imply inference.
+  OPENAI_API_KEY: '',
+  MODEL_ID: '',
   API_TARGET: apiUrl,
 };
 const services = [];
@@ -65,6 +68,10 @@ try {
   apiProcess = startApi();
   start(process.execPath, [path.join(root, 'frontend/node_modules/vite/bin/vite.js'), '--host', '127.0.0.1', '--port', webPort, '--strictPort'], path.join(root, 'frontend'));
   await Promise.all([ready(apiUrl + '/health'), ready(webUrl)]);
+  const health = await json('/health');
+  assert.deepEqual(health.model_adapter, { configured: false, model_id: null, error_code: 'model_not_configured' });
+  assert.equal(health.scientific_workflow, 'not_configured');
+  checks.push('Health distinguishes an unconfigured model adapter from the unimplemented scientific workflow');
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   const errors = [];
@@ -90,6 +97,17 @@ try {
     });
   });
   checks.push('All graph nodes fit within the canvas at 1440×900');
+  await page.getByRole('button', { name: 'New run', exact: true }).click();
+  for (let n = 0; n < 9; n++) {
+    await page.keyboard.press('Tab');
+    assert(await page.evaluate(() => document.querySelector('dialog')?.contains(document.activeElement)), 'Modal focus escaped');
+  }
+  await page.keyboard.press('Escape');
+  assert(await page.getByRole('button', { name: 'New run', exact: true }).evaluate(node => node === document.activeElement));
+  await page.getByRole('button', { name: /Inspect claim A:/ }).press('Enter');
+  await page.getByText('Canonical source passage', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Close inspector selection' }).click();
+  checks.push('Modal traps keyboard focus, Escape restores its opener, and graph claims open with Enter');
   await page.screenshot({ path: path.join(artifactDir, '01-initial.png'), fullPage: true });
 
   await page.getByRole('button', { name: /S1.*Synthetic engineering source/ }).last().click();
@@ -132,6 +150,7 @@ try {
   await slider.press('Home');
   await slider.press('ArrowRight');
   await page.getByText('3 supported', { exact: true }).waitFor();
+  assert(await page.getByRole('link', { name: 'Export live dossier', exact: true }).isVisible());
   assert(await page.getByRole('button', { name: 'Simulate source withdrawal' }).isDisabled());
   await page.getByRole('button', { name: 'Return to live' }).click();
   await page.getByText('1 require review', { exact: true }).waitFor();
@@ -182,9 +201,31 @@ try {
   assert.equal(sources.sources.length, 2);
   assert.equal(sources.claims.length, 0);
   checks.push('Browser imports two real pinned source records without fabricated claims');
+  const alias = await json('/tools/resolve-gene?mention=Ten-a');
+  assert.equal(alias.gene_id, 'FBgn0267001');
+  const ambiguous = await json('/tools/resolve-gene?mention=Teneurin');
+  assert.equal(ambiguous.status, 'ambiguous');
+  assert.equal(ambiguous.candidate_count, 2);
+  for (const candidate of ambiguous.candidates) {
+    assert.equal((await json('/tools/resolve-gene?mention=' + candidate.gene_id)).gene_id, candidate.gene_id);
+  }
+  assert.equal((await json('/tools/resolve-gene?mention=Ten-a&taxon=NCBITaxon%3A9606')).status, 'taxon_mismatch');
+  const ambiguousSearch = await fetch(apiUrl + '/runs/' + sourceRun + '/search?gene_id=Teneurin&query=matching');
+  assert.equal(ambiguousSearch.status, 422);
+  assert.equal((await ambiguousSearch.json()).code, 'gene_ambiguous');
+  const anatomy = await json('/tools/resolve-term?mention=primary%20spermatocyte&ontology=FBbt');
+  assert.equal(anatomy.term_id, 'FBbt:00005286');
+  assert.equal((await json('/tools/resolve-term?mention=adult%20stage&ontology=FBdv')).term_id, 'FBdv:00005369');
+  const obsolete = await json('/tools/resolve-term?mention=FBdv%3A00005329&ontology=FBdv');
+  assert.equal(obsolete.status, 'obsolete');
+  assert.equal(obsolete.term_id, null);
+  assert.deepEqual(obsolete.candidates[0].replaced_by, ['FBdv:00005330']);
+  assert.equal((await json('/tools/resolve-term?mention=adult%20stage%20I&ontology=FBdv')).status, 'not_found');
+  checks.push('Pinned lookup resolves gene/term identity, preserves aliases and taxon ambiguity, and leaves obsolete/broad terms unaccepted');
   await page.screenshot({ path: path.join(artifactDir, '03-sources.png'), fullPage: true });
 
   await page.getByRole('button', { name: /PMC3345284.*Teneurins/ }).last().click();
+  await page.getByLabel('Gene identity', { exact: true }).fill('Ten-a');
   await page.getByLabel('Decision-relevant search').fill('DA1 VA1d matching');
   await page.getByRole('button', { name: 'Search source passages' }).click();
   await page.getByRole('button', { name: /Read exact spans/ }).first().click();
@@ -220,6 +261,8 @@ try {
   assert.equal(badVersion.status, 422);
   const forgedSpan = await fetch(apiUrl + '/runs/' + sourceRun + '/evidence', post({ ...pinBody, operation_id: 'bad-span', span_ids: [pinBody.span_ids[0] + 'forged'] }));
   assert.equal(forgedSpan.status, 422);
+  const missingChunk = await fetch(apiUrl + '/runs/' + sourceRun + '/chunks/nonexistent?source_version=' + detail.source_version);
+  assert.equal(missingChunk.status, 404);
   const unknownField = await fetch(apiUrl + '/runs', post({ mode: 'fixture', secret: 'must-not-echo' }));
   assert.equal(unknownField.status, 422);
   assert(!(await unknownField.text()).includes('must-not-echo'));
