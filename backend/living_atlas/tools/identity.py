@@ -39,6 +39,13 @@ class GeneResolver:
                 raise ValueError("Invalid alias collision")
             for gene in rows:
                 candidate = self._candidate(gene)
+                previous = self._primary.get(candidate["gene_id"])
+                if previous is not None and previous != candidate:
+                    raise ValueError("Conflicting identity metadata for one primary gene ID")
+                # Every displayed ambiguity candidate must be resolvable by
+                # its explicit primary ID on the caller's next lookup, even
+                # when that gene has no literature in the selected corpus.
+                self._primary[candidate["gene_id"]] = candidate
                 self._index.setdefault(alias, {})[candidate["gene_id"]] = candidate
 
     @staticmethod

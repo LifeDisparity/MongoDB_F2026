@@ -15,6 +15,9 @@ were collected from the complete table. Multi-gene matches are retained under
 `ambiguous_aliases`; subset selection therefore cannot make these aliases appear
 unique. In this release, `Teneurin`, `Lola`, `eyeful`, `e`, `1.2` and `misguided`
 have collisions. Case remains meaningful: do not case-fold fly gene symbols.
+Every ambiguity candidate can be looked up again by its explicit primary ID,
+including candidates outside the source cohort. Their unrelated aliases are
+not indexed, and resolution does not add them to the source corpus.
 Unknown/historical IDs remain unresolved; this file is not an obsolete-ID
 mapping database. The alias artifact's own SHA-256 is exposed on every result
 so all experimental arms can verify identical input.
