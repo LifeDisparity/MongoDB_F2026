@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { Icon } from '../app/Icon';
 import { relationLabel, statusLabel, type Selection } from '../graph/EvidenceGraph';
 import { PassageBrowser } from './PassageBrowser';
+import { HarnessPanel } from '../policy/HarnessPanel';
 
 function Version({ value }: { value: string }) {
   return <code title={value}>{value.length > 24 ? `${value.slice(0, 12)}…${value.slice(-8)}` : value}</code>;
@@ -72,6 +73,6 @@ export function Inspector({ snapshot, selection, onSelect, mode, onChanged }: { 
       <section className="inspector-section"><h3>Source library</h3>{snapshot.sources.map(row => <button className="source-list-row" key={`${row.source_id}/${row.source_version}`} onClick={() => onSelect({ kind: 'source', id: row.source_id, version: row.source_version })}><Icon name="book" size={16} /><span><strong>{row.pmcid ?? row.source_id}</strong><small>{row.title}</small></span><Icon name="chevron" size={14} /></button>)}{!snapshot.sources.length && <p className="muted">No sources existed at this point in the run.</p>}</section>
       <div className="small-note"><Icon name="shield" size={16} /><p>Source availability changes support. It does not change biological truth.</p></div>
     </>}
-    <details className="harness-panel"><summary><span><Icon name="spark" size={15} />Harness evolution</span><span>{snapshot.policies.length ? `${snapshot.policies.length} policies` : 'Pending'}</span></summary>{snapshot.policies.length ? snapshot.policies.map(policy => <div className="policy-row" key={policy.policy_version}><strong>{policy.policy_version}</strong><span>{statusLabel(policy.selection_status)}</span><pre>{JSON.stringify(policy.configuration, null, 2)}</pre></div>) : <p>No evaluated policy proposal has been recorded.</p>}{snapshot.evaluations.map(evaluation => <div className="evaluation-row" key={evaluation.evaluation_id}><strong>{evaluation.arm} · {statusLabel(evaluation.split)}</strong><p>{evaluation.correct_count}/{evaluation.decision_count} correct decisions · {evaluation.supported_count}/{evaluation.support_count} support audit</p><code>{evaluation.model_id}</code></div>)}</details>
+    <HarnessPanel snapshot={snapshot} />
     </div></aside>;
 }
