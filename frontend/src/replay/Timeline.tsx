@@ -6,7 +6,7 @@ export function Timeline({ events, cursor, lastSequence, mode, playing, seek, go
   const first = events.at(0);
   const last = events.at(-1);
   const duration = first && last ? Math.max(0, (Date.parse(last.occurred_at) - Date.parse(first.occurred_at)) / 1000) : 0;
-  const elapsed = duration < 60 ? `${Math.round(duration)}s` : `${Math.floor(duration / 60)}m ${Math.round(duration % 60)}s`;
+  const elapsed = !first || !last ? 'not recorded' : duration < 60 ? `${Math.round(duration)}s` : `${Math.floor(duration / 60)}m ${Math.round(duration % 60)}s`;
   const selectedEvent = events.find(event => event.sequence === cursor);
   return <footer className="timeline" aria-label="Event replay controls">
     <div className="timeline-heading"><Icon name="clock" size={17} /><strong>Event history</strong><span>{events.length} recorded events</span><span className="original-time">Original duration {elapsed}</span></div>
